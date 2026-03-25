@@ -11,8 +11,7 @@ import { TracksPage } from './pages/tracks-page/tracks-page';
   imports: [
     CommonModule,
     TracksRoutingModule,
-    SharedModule,
-    TracksPage
+    SharedModule
   ]
 })
 export class TracksModule { }

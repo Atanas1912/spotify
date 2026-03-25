@@ -5,8 +5,7 @@ import { HomePage } from '@modules/home/pages/home-page/home-page';
 export const routes: Routes = [
     {
         path: 'auth',
-        component: AuthPage,
-        loadChildren: () => import(`./modules/auth/auth-module`).then(m => m.AuthModule)
+        loadComponent: () => import(`./modules/auth/pages/auth-page/auth-page`).then(c => c.AuthPage)
     },
     {
         path: '',
