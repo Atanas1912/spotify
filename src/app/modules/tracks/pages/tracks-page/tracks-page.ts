@@ -3,7 +3,6 @@ import { SharedModule } from "@shared/shared-module";
 
 @Component({
   selector: 'app-tracks-page',
-  imports: [SharedModule],
   templateUrl: './tracks-page.html',
   styleUrl: './tracks-page.css',
 })
