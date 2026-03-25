@@ -8,6 +8,8 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class SectionGeneric implements OnInit {
   @Input() title: string = ''
+  @Input() mode: 'small' | 'big' = 'big' // solo admite los valores 'small' y 'big' y por defecto, se establece big
+  @Input() dataTracks: Array<any> = []
 
   constructor() { }
 
