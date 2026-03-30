@@ -6,10 +6,6 @@ export const routes: Routes = [
         loadComponent: () => import(`./modules/auth/auth-page/auth-page`).then(c => c.AuthPage)
     },
     {
-        path: '',
-        loadComponent: () => import(`./modules/home/home-page/home-page`).then(c => c.HomePage)
-    },
-    {
         path:'tracks',
         loadComponent:() => import('@modules/tracks/tracks-page/tracks-page').then(c => c.TracksPage)
     },
@@ -20,5 +16,13 @@ export const routes: Routes = [
     {
         path:'history',
         loadComponent:() => import('@modules/history/history-page/history-page').then(c => c.HistoryPage)
+    },
+    {
+        path: '',
+        loadComponent: () => import(`./modules/home/home-page/home-page`).then(c => c.HomePage)
+    },
+    {
+        path: '**',
+        redirectTo: ''
     }
 ];

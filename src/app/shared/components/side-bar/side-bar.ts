@@ -1,8 +1,12 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { RouterLink } from "@angular/router";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-side-bar',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, RouterLink],
   templateUrl: './side-bar.html',
   styleUrl: './side-bar.css',
 })
@@ -15,14 +19,15 @@ export class SideBar implements OnInit {
 
     customOptions: Array<any> = []
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.mainMenu.defaultOptions = [
       {
         name: 'Home',
         icon: 'uil uil-estate',
-        router: ['/', 'auth']
+        router: ['/', ''],
+        query: { pagina: 'Home'}
       },
       {
         name: 'Buscar',
@@ -66,6 +71,16 @@ export class SideBar implements OnInit {
         router: ['/']
       }
     ]
+  }
 
+  goTo($event: any): void { //para navegar, puedo usar el  <li [routerLink]="item.router">, o también usar un método como este. Con ambos puedo pasar queryParams
+    this.router.navigate(['/', 'favorites'], {
+      queryParams: {
+        key1: 'value1',
+        key2: 'value2',
+        key3: 'value3'
+      }
+    })
+    console.log($event)
   }
 }
