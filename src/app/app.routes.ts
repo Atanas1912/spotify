@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
     {
-        path: 'auth',
+        path: 'login',
         loadComponent: () => import(`./modules/auth/auth-page/auth-page`).then(c => c.AuthPage)
     },
     {
@@ -18,11 +18,11 @@ export const routes: Routes = [
         loadComponent:() => import('@modules/history/history-page/history-page').then(c => c.HistoryPage)
     },
     {
-        path: '',
+        path: 'home',
         loadComponent: () => import(`./modules/home/home-page/home-page`).then(c => c.HomePage)
     },
     {
         path: '**',
-        redirectTo: ''
+        redirectTo: '/login'
     }
 ];

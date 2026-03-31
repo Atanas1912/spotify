@@ -11,6 +11,6 @@ export class ImgBroken {
     elNative.src = this.customImg
   }
 
-  constructor(private elHost: ElementRef) {console.log(this.elHost)}
+  constructor(private elHost: ElementRef) {}
 
 }

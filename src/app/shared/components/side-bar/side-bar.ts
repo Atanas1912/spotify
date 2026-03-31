@@ -26,8 +26,8 @@ export class SideBar implements OnInit {
       {
         name: 'Home',
         icon: 'uil uil-estate',
-        router: ['/', ''],
-        query: { pagina: 'Home'}
+        router: ['/', 'home']
+        // query: { pagina: 'Home'}
       },
       {
         name: 'Buscar',
@@ -38,14 +38,14 @@ export class SideBar implements OnInit {
         name: 'Tu biblioteca',
         icon: 'uil uil-chart',
         router: ['/', 'favorites'],
-        query: { hola: 'mundo' }
       }
     ]
 
     this.mainMenu.accessLink = [
       {
         name: 'Crear lista',
-        icon: 'uil-plus-square'
+        icon: 'uil-plus-square',
+        router: ['/', 'auth']
       },
       {
         name: 'Canciones que te gustan',

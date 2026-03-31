@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, Input } from '@angular/core';
 import { TrackModel } from '@core/models/tracks-model';
 import { ImgBroken } from "@shared/directivas/img-broken";
+import { Multimedia } from '@shared/services/multimedia';
 
 @Component({
   selector: 'app-card-player',
@@ -14,10 +15,14 @@ export class CardPlayer implements OnInit{
 @Input() mode: 'small' | 'big' = 'small';
 @Input() track: TrackModel = {_id: 0, name: '', album: '', url: '', cover: ''};
 
-constructor() { }
+constructor(private multimediaService:Multimedia) { }
 
 ngOnInit(): void {
   
+}
+
+sendPlay(track:TrackModel): void {
+  this.multimediaService.callback.emit(track);
 }
 
 }
