@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { Router } from '@angular/router';
+import { Track } from '@modules/tracks/services/track';
 
 @Component({
   selector: 'app-side-bar',
@@ -19,7 +20,7 @@ export class SideBar implements OnInit {
 
     customOptions: Array<any> = []
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private trackService: Track) {}
 
   ngOnInit(): void {
     this.mainMenu.defaultOptions = [
@@ -71,6 +72,17 @@ export class SideBar implements OnInit {
         router: ['/']
       }
     ]
+
+    this.trackService.dataTracksRandom$
+    .subscribe((response: any) => {
+      this.customOptions.push(
+        {
+          name: response[0].name,
+          router: ['/']
+        }
+      )
+    })
+
   }
 
   goTo($event: any): void { //para navegar, puedo usar el  <li [routerLink]="item.router">, o también usar un método como este. Con ambos puedo pasar queryParams

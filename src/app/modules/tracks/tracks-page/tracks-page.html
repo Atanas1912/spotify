@@ -2,7 +2,7 @@
 <app-media-player></app-media-player> <!-- Reproductor -->
 <div class="home-wrapper tracks-page">
     <!-- seccion superior (cartas pequeñas) -->
-    <app-section-generic [dataTracks]="mockTracksList" [mode]="'small'" [title]="'¡La mejor música del mundo!'"></app-section-generic> <!-- SE SIGUE VIENDO QUITANDO EL IMPORTE DE TRACKS-MODULE.TS DEL MÓDULO COMPARTIDO -->
+    <app-section-generic [dataTracks]="tracksTrending" [mode]="'small'" [title]="'¡La mejor música del mundo!'"></app-section-generic> <!-- SE SIGUE VIENDO QUITANDO EL IMPORTE DE TRACKS-MODULE.TS DEL MÓDULO COMPARTIDO -->
     <!-- seccion inferior (cartas grandes) -->
-    <app-section-generic [dataTracks]="mockTracksList" [mode]="'big'" [title]="'¡Lo mejor de la electrónica!'"></app-section-generic>
+    <app-section-generic [dataTracks]="tracksRandom" [mode]="'big'" [title]="'¡Lo mejor de la electrónica!'"></app-section-generic>
 </div>
