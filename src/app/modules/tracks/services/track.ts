@@ -1,32 +1,46 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { map, mergeMap, catchError } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment.development';
 import { TrackModel } from '@core/models/tracks-model';
-import * as dataRaw from '../../../data/tracks.json'
 
 @Injectable({
   providedIn: 'root',
 })
 export class Track {
-  
-  dataTracksTrending$ : Observable<TrackModel[]> = of([]) //Le pongo el $ para indicar que es un observable (bien visto por la comunidad)
-  dataTracksRandom$ : Observable<TrackModel[]> = of([]) //creo 2 observables vacíos para luego llenarlos 
 
-  constructor() {
-    const { data } = (dataRaw as any).default //a data le asigno el valor del json, diciendole que lo trate como any para evitar problemas de tipado, y accediendo a la propiedad default que es donde se encuentra el json
-    
-    this.dataTracksTrending$ = of(data) //le asigno al observable el valor del json, usando of para convertirlo en un observable
+  private readonly URL = environment.api;
 
-    this.dataTracksRandom$ = new Observable((observer) => { //creo un nuevo observable, que recibe una función con un observer como parámetro, el observer es el encargado de emitir los valores del observable
+  constructor(private httpClient: HttpClient) { }
 
-      const trackExample: TrackModel = { //creo un objeto de tipo TrackModel con datos de ejemplo, para simular una respuesta de una API
-        _id: 1,
-        name: 'Track Example',
-        album: 'Album Example',
-        cover: 'https://via.placeholder.com/150',
-        url: 'https://www.example.com/track-example',
-      }
+  private skipById(listTracks: TrackModel[], id: number): Promise<TrackModel[]> { //promesa que recibe un array de tracks y un id, y devuelve un nuevo array sin el track con el id especificado
+    return new Promise((resolve, reject) => {
+      const listTmp = listTracks.filter(a => a._id !== id)
+      resolve(listTmp)
+    })  
+  }
 
-      observer.next([trackExample]) //emito el valor del observable, en este caso un array con el objeto de ejemplo, usando next para emitir el valor
-    })
+  getAllTracks$(): Observable<any> { 
+    return this.httpClient.get(`${this.URL}/tracks`)//devuelve un observable con la respuesta de la petición GET a la URL, concatenandole /tracks
+    .pipe(
+      map(({ data } : any) => {
+        return data
+      })
+    )
+  }
+
+  getAllRandom$(): Observable<any> {
+    return this.httpClient.get(`${this.URL}/tracks`) //devuelve un observable con la respuesta de la petición GET a la URL, concatenandole /tracks
+    .pipe(
+      mergeMap(({ data } : any) => this.skipById(data as TrackModel[], 1)),
+      //  map((dataRevertida) => { 
+      //    return dataRevertida.filter((track:TrackModel) => track._id !== 1) // filtra el array para eliminar el track con id 1
+      //  })
+      catchError((err) => {
+          const { status, statusText } = err;
+          return of([])
+        })
+    )
   }
 }

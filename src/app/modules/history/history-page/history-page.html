@@ -1,5 +1,8 @@
 <app-side-bar></app-side-bar>
 <app-media-player></app-media-player>
 <div class="home-wrapper">
-    <span>Hola</span>
+    <app-search (callbackData)="receiveData($event)"></app-search> <!-- Recibe los datos del hijo -->
+    <app-play-list-body [tracks]="listResults$ | async"></app-play-list-body>
 </div>
+
+<!-- async lo que hace es suscribirse al Observable y obtener el valor emitido, cancelando la suscripción cuando el componente se destruye y nos ayuda cuando el usuario tiene conexión lenta (en este caso) -->

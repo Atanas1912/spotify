@@ -1,13 +1,15 @@
 import { Routes } from '@angular/router';
+import { sessionGuard } from '@core/guards/session-guard';
 
 export const routes: Routes = [
     {
-        path: 'login',
+        path: 'auth/login',
         loadComponent: () => import(`./modules/auth/auth-page/auth-page`).then(c => c.AuthPage)
     },
     {
         path:'tracks',
-        loadComponent:() => import('@modules/tracks/tracks-page/tracks-page').then(c => c.TracksPage)
+        loadComponent:() => import('@modules/tracks/tracks-page/tracks-page').then(c => c.TracksPage),
+        canActivate: [sessionGuard]
     },
     {
         path:'favorites',
@@ -18,11 +20,7 @@ export const routes: Routes = [
         loadComponent:() => import('@modules/history/history-page/history-page').then(c => c.HistoryPage)
     },
     {
-        path: 'home',
-        loadComponent: () => import(`./modules/home/home-page/home-page`).then(c => c.HomePage)
-    },
-    {
         path: '**',
-        redirectTo: '/login'
+        redirectTo: '/tracks'
     }
 ];

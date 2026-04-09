@@ -25,14 +25,15 @@ export class MediaPlayer implements OnInit, OnDestroy {
   constructor(private multimediaService: Multimedia) { }
 
   ngOnInit(): void {
-    const observer1$ : Subscription = this.multimediaService.callback.subscribe(
-      (response:TrackModel) => {
-        console.log('Recibiendo cancion: ', response)
-      }
-    )
-
-    this.listaObservables = [ observer1$ ]
-    console.log('Lista de observables: ', this.listaObservables.length)
+    const observable1$ = this.multimediaService.myObservable1$
+      .subscribe(
+        (responseOK) => { //cuando el observable emite un valor con next o complete
+          console.log('todo ok', responseOK)
+        },
+        (responseFail) => { //cuando el observable emite un error
+          console.error('todo mal', responseFail)
+        }
+      )
   }
 
   ngOnDestroy(): void {
@@ -40,3 +41,4 @@ export class MediaPlayer implements OnInit, OnDestroy {
     console.log('Destruyendo media player, Lista de observables: ', this.listaObservables.length)
   }
 }
+ 
