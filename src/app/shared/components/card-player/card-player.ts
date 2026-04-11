@@ -12,17 +12,18 @@ import { Multimedia } from '@shared/services/multimedia';
   styleUrl: './card-player.css',
 })
 export class CardPlayer implements OnInit{
-@Input() mode: 'small' | 'big' = 'small';
-@Input() track: TrackModel = {_id: 0, name: '', album: '', url: '', cover: ''};
+  @Input() mode: 'small' | 'big' = 'small';
+  @Input() track: TrackModel = {_id: 0, name: '', album: '', url: '', cover: ''};
 
-constructor(private multimediaService:Multimedia) { }
+  constructor(private multimediaService:Multimedia) { }
 
-ngOnInit(): void {
-  
-}
+  ngOnInit(): void {
+    
+  }
 
-sendPlay(track:TrackModel): void {
-  this.multimediaService.callback.emit(track);
-}
+  sendPlay(track:TrackModel): void {
+    this.multimediaService.trackInfo$.next(track)
+    console.log('mandando cancion a la barra -> ', track)
+  }
 
 }
