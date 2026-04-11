@@ -1,14 +1,17 @@
-import { TestBed } from '@angular/core/testing';
-import { HttpInterceptorFn } from '@angular/common/http';
-
+import { CookieService } from 'ngx-cookie-service';
 import { injectSessionInterceptor } from './inject-session-interceptor';
+import { TestBed } from '@angular/core/testing';
 
 describe('injectSessionInterceptor', () => {
-  const interceptor: HttpInterceptorFn = (req, next) => 
-    TestBed.runInInjectionContext(() => injectSessionInterceptor(req, next));
+  let interceptor: injectSessionInterceptor;
+  let cookieService: CookieService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [CookieService]
+    });
+    cookieService = TestBed.inject(CookieService);
+    interceptor = new injectSessionInterceptor(cookieService);
   });
 
   it('should be created', () => {
