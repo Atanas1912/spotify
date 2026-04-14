@@ -1,14 +1,22 @@
 import { TestBed } from '@angular/core/testing';
 import { CanActivateFn } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+import { Router } from '@angular/router';
 
-import { sessionGuard } from './session-guard';
+import { SessionGuard } from './session-guard';
 
 describe('sessionGuard', () => {
-  const executeGuard: CanActivateFn = (...guardParameters) => 
-      TestBed.runInInjectionContext(() => sessionGuard(...guardParameters));
+  let cookieService: CookieService;
+  let router!: Router
+
+  const executeGuard: CanActivateFn = (route, state) => 
+      TestBed.runInInjectionContext(() => new SessionGuard(cookieService, router).canActivate(route, state));
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [CookieService]
+    });
+    cookieService = TestBed.inject(CookieService);
   });
 
   it('should be created', () => {

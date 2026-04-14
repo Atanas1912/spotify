@@ -45,8 +45,8 @@ export class AuthPage implements OnInit {
   }
 
   sendLogin(): void{
-    const { email, pasword } = this.formLogin.value
-    this.asAuthService.sendCredentials(email, pasword)
+    const { email, password } = this.formLogin.value
+    this.asAuthService.sendCredentials(email, password)
     .subscribe(responseOk => { //cuando la respuesta es OK
       console.log('Respuesta OK', responseOk)
       const { tokenSession, data } = responseOk //desestructuramos la respuesta para obtener el tokenSession y los datos del usuario

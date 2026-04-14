@@ -11,7 +11,8 @@ import { CookieService } from 'ngx-cookie-service';
 export class Auth {
   private readonly URL = environment.api;
   
-  constructor(private http: HttpClient, private cookie: CookieService) {}
+  // constructor(private http: HttpClient, private cookie: CookieService) {}
+   constructor(private http: HttpClient, private cookie: CookieService) {}
 
   sendCredentials(email:string, password:string): Observable<any> {
     const body = {
@@ -19,12 +20,15 @@ export class Auth {
     }
 
     return this.http.post(`${this.URL}/auth/login`, body)
-    .pipe(
-      tap((responseOK: any) => {
-        const { tokenSession, data } = responseOK //desestructuramos la respuesta para obtener el tokenSession y los datos del usuario
-        this.cookie.set('token_service', tokenSession, 4, '/') //guardamos el token en una cookie con una duración de 4 días y una ruta de acceso de toda la aplicación '/'
-      })
-    )
+     .pipe(
+       tap((responseOK: any) => {
+         const { tokenSession, data } = responseOK //desestructuramos la respuesta para obtener el tokenSession y los datos del usuario
+         this.cookie.set('token_service', tokenSession, 4, '/') //guardamos el token en una cookie con una duración de 4 días y una ruta de acceso de toda la aplicación '/'
+       })
+     )
+  }
+
+  suma(a:number, b:number): number {
+    return a+b
   }
 }
- 
