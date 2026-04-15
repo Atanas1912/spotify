@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, mergeMap, catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -12,7 +12,6 @@ export class Track {
 
   private readonly URL = environment.api;
 
-  constructor(private httpClient: HttpClient) { }
 
   private skipById(listTracks: TrackModel[], id: number): Promise<TrackModel[]> { //promesa que recibe un array de tracks y un id, y devuelve un nuevo array sin el track con el id especificado
     return new Promise((resolve, reject) => {
@@ -22,7 +21,7 @@ export class Track {
   }
 
   getAllTracks$(): Observable<any> { 
-    return this.httpClient.get(`${this.URL}/tracks`)//devuelve un observable con la respuesta de la petición GET a la URL, concatenandole /tracks
+    return inject(HttpClient).get(`${this.URL}/tracks`)//devuelve un observable con la respuesta de la petición GET a la URL, concatenandole /tracks
     .pipe(
       map(({ data } : any) => {
         return data
@@ -31,7 +30,7 @@ export class Track {
   }
 
   getAllRandom$(): Observable<any> {
-    return this.httpClient.get(`${this.URL}/tracks`) //devuelve un observable con la respuesta de la petición GET a la URL, concatenandole /tracks
+    return inject(HttpClient).get(`${this.URL}/tracks`) //devuelve un observable con la respuesta de la petición GET a la URL, concatenandole /tracks
     .pipe(
       mergeMap(({ data } : any) => this.skipById(data as TrackModel[], 1)),
       //  map((dataRevertida) => { 

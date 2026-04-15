@@ -4,6 +4,7 @@ import { TrackModel } from '@core/models/tracks-model';
 import { Track } from '../services/track';
 import { Subscription } from 'rxjs';
 import { HttpClientModule } from '@angular/common/http';
+import { inject } from '@angular/core'
 
 @Component({
   selector: 'app-tracks-page',
@@ -14,13 +15,26 @@ import { HttpClientModule } from '@angular/common/http';
   changeDetection: ChangeDetectionStrategy.OnPush //esto hace que el componente solo se vuelva a renderizar cuando cambie alguna de sus propiedades, lo que mejora el rendimiento, pero hay que tener cuidado de marcar para check cuando se actualizan las propiedades desde un observable
 })
 
-export class TracksPage implements OnInit, OnDestroy{
+export class TracksPage {
 
   tracksTrending: Array<TrackModel> = [] //creo arrays vacíos para luego llenarlos con los datos del json
   tracksRandom: Array<TrackModel> = []
   listObservers$: Array<Subscription> = [] //creo un array para guardar las suscripciones a los observables, para luego poder desuscribirme en el ngOnDestroy
+  
+  private trackService = inject(Track)
+  private cdr = inject(ChangeDetectorRef)
 
-  constructor(private trackService: Track, private cdr: ChangeDetectorRef) { } //inyecto el servicio Track para poder acceder a los observables que contienen los datos del json 
+  constructor() {
+    this.trackService.getAllTracks$().subscribe((response) => {
+      this.tracksTrending = response
+    })
+
+    this.trackService.getAllRandom$()
+    .subscribe((response: TrackModel[]) => {
+      this.tracksRandom = response
+      this.cdr.markForCheck()
+    })
+  }
 
   // ngOnInit(): void {
   //   this.trackService.getAllTracks$()
@@ -38,26 +52,12 @@ export class TracksPage implements OnInit, OnDestroy{
   //     })
   // }
 
-  ngOnInit(): void {
-    this.loadDataAll()
-    this.loadDataRandom()
-  }
-
-  async loadDataAll(): Promise<any> {
-    this.tracksTrending = await this.trackService.getAllTracks$().toPromise()
-  }
-
   loadDataRandom(): void {
     this.trackService.getAllRandom$()
     .subscribe((response: TrackModel[]) => {
       this.tracksRandom = response
       this.cdr.markForCheck()
-      console.log('Data random', response)
     })
-  }
-
-  ngOnDestroy(): void {
-    this.listObservers$.forEach(u => u.unsubscribe()) //me desuscribo de todos los observables para evitar fugas de memoria
   }
 
 }
