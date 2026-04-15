@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { SessionGuard } from '@core/guards/session-guard';
+import { sessionGuardFuncional } from '@core/guards/session-guard-funcional';
 
 export const routes: Routes = [
     {
@@ -9,7 +10,7 @@ export const routes: Routes = [
     {
         path:'tracks',
         loadComponent:() => import('@modules/tracks/tracks-page/tracks-page').then(c => c.TracksPage),
-        canActivate: [SessionGuard]
+        canActivate: [sessionGuardFuncional]
     },
     {
         path:'favorites',
