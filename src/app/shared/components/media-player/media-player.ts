@@ -1,8 +1,9 @@
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { TrackModel } from '@core/models/tracks-model';
+import { Component, OnInit, ViewChild, ElementRef, inject, DestroyRef } from '@angular/core';
 import { Multimedia } from '@shared/services/multimedia';
 import { Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { destroyCustom } from '@core/utils/destroyCustom';
 
 @Component({
   selector: 'app-media-player',
@@ -11,18 +12,20 @@ import { Subscription } from 'rxjs';
   templateUrl: './media-player.html',
   styleUrl: './media-player.css',
 })
-export class MediaPlayer implements OnInit, OnDestroy {
+export class MediaPlayer implements OnInit {
   @ViewChild('progressBar') progressBar:ElementRef = new ElementRef('')
   listaObservables: Array<Subscription> = []
   state: string = 'paused'
 
-  constructor(public multimediaService: Multimedia) { }
+  multimediaService = inject(Multimedia)
+  destroyCustom = destroyCustom()
+
+  constructor() { }
 
   ngOnInit(): void {
-    const observer1$ = this.multimediaService.playerStatus$
+    this.multimediaService.playerStatus$
+      .pipe(this.destroyCustom())
       .subscribe(status => this.state = status)
-
-      this.listaObservables = [observer1$]
   }
 
   handlePosition(event: MouseEvent): void {
@@ -35,11 +38,6 @@ export class MediaPlayer implements OnInit, OnDestroy {
     this.multimediaService.seekAudio(percentageFromX)
 
     console.log(`Click(x); ${percentageFromX}`)
-  }
-
-  ngOnDestroy(): void {
-    this.listaObservables.forEach(s => s.unsubscribe())
-    console.log('Destruyendo media player, Lista de observables: ', this.listaObservables.length)
   }
 }
  
