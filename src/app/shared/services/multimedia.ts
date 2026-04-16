@@ -1,7 +1,6 @@
-import { Injectable, EventEmitter, Inject, PLATFORM_ID } from '@angular/core';
+import { Injectable, EventEmitter, Inject, PLATFORM_ID, signal, effect } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { TrackModel } from '@core/models/tracks-model';
-import { BehaviorSubject, Observable, Observer, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 
 @Injectable({
@@ -9,25 +8,34 @@ import { environment } from 'src/environments/environment.development';
 })
 export class Multimedia {
   callback: EventEmitter<any> = new EventEmitter<any>();
-  
-  public trackInfo$: BehaviorSubject<any> = new BehaviorSubject(undefined)
   public audio?: HTMLAudioElement
-  public timeElapsed$: BehaviorSubject<string> = new BehaviorSubject('00:00')
-  public timeRemaining$: BehaviorSubject<string> = new BehaviorSubject('-00:00')
-  public playerStatus$: BehaviorSubject<string> = new BehaviorSubject('paused')
-  public playerPercentage$: BehaviorSubject<number> = new BehaviorSubject(0)
+  
+  public trackInfoSignal = signal<TrackModel | undefined>(undefined)
+  
+  public timeElapsedSignal = signal<string>('00:00')
+
+  public timeRemainingSignal = signal<string>('-00:00')
+
+  public playerStatusSignal = signal<string>('paused')
+
+  public playerPercentageSignal = signal<number>(0)
 
    constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     if (isPlatformBrowser(this.platformId)) {
       this.audio = new Audio()
     }
 
-    this.trackInfo$.subscribe(responseOK => {
-      if(responseOK){
-        console.log('servicio multimedia, ', responseOK)
-        this.setAudio(responseOK)
-      }
+    effect(() => {
+      const dataInfo = this.trackInfoSignal()
+      if(dataInfo) this.setAudio(dataInfo)
     })
+
+    // this.trackInfo$.subscribe(responseOK => {
+    //   if(responseOK){
+    //     console.log('servicio multimedia, ', responseOK)
+    //     this.setAudio(responseOK)
+    //   }
+    // })
 
     this.listenAllEvents()
    }
@@ -54,16 +62,16 @@ export class Multimedia {
     console.log('STATE => ', state)
     switch(state.type){
       case 'play':
-        this.playerStatus$.next('play') //asi se pasa el estado al behaviorSubject
+        this.playerStatusSignal.set('play') //asi se pasa el estado al behaviorSubject
         break;
       case 'playing':
-        this.playerStatus$.next('playing')
+        this.playerStatusSignal.set('playing')
         break;
       case 'ended':
-        this.playerStatus$.next('ended')
+        this.playerStatusSignal.set('ended')
         break;
       default:
-        this.playerStatus$.next('paused')
+        this.playerStatusSignal.set('paused')
         break;
     }
    }
@@ -77,7 +85,7 @@ export class Multimedia {
     const displaySeconds = (seconds < 10) ? `0${seconds}` : seconds;
     const displayMinutes = (minutes < 10) ? `0${minutes}` : minutes;
     const displayFormat = `${displayMinutes}:${displaySeconds}`
-    this.timeElapsed$.next(displayFormat)
+    this.timeElapsedSignal.set(displayFormat)
    }
 
    private setPercentage(currentTime : number | undefined, duration : number | undefined){
@@ -85,7 +93,7 @@ export class Multimedia {
     const durationValue = duration || 0
     
     let percentage = (currentTimeValue * 100) / durationValue;
-    this.playerPercentage$.next(percentage)
+    this.playerPercentageSignal.set(percentage)
    }
 
    private setTimeRemaining(currentTime: number | undefined, duration: number | undefined){
@@ -98,7 +106,7 @@ export class Multimedia {
     const displaySeconds = (seconds < 10) ? `0${seconds}` : seconds;
     const displayMinutes = (minutes < 10) ? `0${minutes}` : minutes;
     const displayFormat = `-${displayMinutes}:${displaySeconds}`
-    this.timeRemaining$.next(displayFormat)
+    this.timeRemainingSignal.set(displayFormat)
    }
 
    private normalizeAudioUrl(url: string): string {
