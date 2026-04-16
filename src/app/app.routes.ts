@@ -9,8 +9,13 @@ export const routes: Routes = [
     },
     {
         path:'tracks',
-        loadComponent:() => import('@modules/tracks/tracks-page/tracks-page').then(c => c.TracksPage),
-        canActivate: [sessionGuardFuncional]
+        loadComponent:() => import('@modules/tracks/tracks-page/tracks-page').then(c => c.TracksPage)
+        //canActivate: [sessionGuardFuncional]
+    },
+    {
+        path:'tracks/:category',
+        loadComponent:() => import('@modules/tracks/tracks-page/tracks-page').then(c => c.TracksPage)
+        //canActivate: [sessionGuardFuncional]
     },
     {
         path:'favorites',

@@ -1,14 +1,15 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, Input } from '@angular/core';
 import { SharedModule } from "@shared/shared-module";
 import { TrackModel } from '@core/models/tracks-model';
 import { Track } from '../services/track';
 import { Subscription } from 'rxjs';
 import { HttpClientModule } from '@angular/common/http';
 import { inject } from '@angular/core'
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-tracks-page',
-  imports: [SharedModule, HttpClientModule],
+  imports: [SharedModule, HttpClientModule, CommonModule],
   standalone: true,
   templateUrl: './tracks-page.html',
   styleUrl: './tracks-page.css',
@@ -23,6 +24,8 @@ export class TracksPage {
   
   private trackService = inject(Track)
   private cdr = inject(ChangeDetectorRef)
+
+  @Input() category: any
 
   constructor() {
     this.trackService.getAllTracks$().subscribe((response) => {
